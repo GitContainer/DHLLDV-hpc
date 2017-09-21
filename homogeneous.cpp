@@ -1,5 +1,6 @@
 #include "homogeneous.h"
 #include "fluidutils.h"
+#include "particleutils.h"
 
 #include <cmath>
 #include <boost/units/cmath.hpp>
