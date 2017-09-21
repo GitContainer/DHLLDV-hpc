@@ -29,3 +29,18 @@ quantity<dimensionless> frictionfactor( quantity<dimensionless> Re, quantity<len
 
     return result;
 }
+
+// Pressure loss per meter for single phase fluids
+quantity<pressure_gradient> fluidPressureLoss( quantity<velocity> v, quantity<length> D, quantity<length> eps, quantity<dynamic_viscosity> mu, quantity<mass_density> rho )
+{
+    quantity<dimensionless> Re = reynolds(rho, v, D, mu);
+    quantity<dimensionless> lambda = frictionfactor( Re, D, eps);
+
+    return ( 0.5 * lambda / D * rho * pow<2>(v) );
+}
+
+// Relative density of solids in fluid
+quantity<dimensionless> relativeDensity( quantity<mass_density> rhos, quantity<mass_density> rhol )
+{
+    return ((rhos-rhol)/rhol);
+}

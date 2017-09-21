@@ -8,6 +8,8 @@
 #include <boost/units/systems/si/kinematic_viscosity.hpp>
 #include <boost/units/systems/si/io.hpp>
 
+#include "core/units/systems/si/pressure_gradient.hpp"
+
 using namespace boost::units;
 using namespace boost::units::si;
 
@@ -19,5 +21,11 @@ quantity<dimensionless> reynolds( quantity<velocity> v, quantity<length> L, quan
 
 // Approximation of the Darcy Weisbach friction factor using the formula of S.W. Churchill.
 quantity<dimensionless> frictionfactor( quantity<dimensionless> Re, quantity<length> D, quantity<length> eps );
+
+// Pressure loss per meter for single phase fluids
+quantity<pressure_gradient> fluidPressureLoss( quantity<velocity> v, quantity<length> D, quantity<length> eps, quantity<dynamic_viscosity> mu, quantity<mass_density> rho );
+
+// Relative density of solids in fluid
+quantity<dimensionless> relativeDensity( quantity<mass_density> rhos, quantity<mass_density> rhol );
 
 #endif
