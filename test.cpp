@@ -16,7 +16,7 @@ int main()
     quantity<length> D = 0.5 * meter;
     quantity<length> L = 1200.0 * meter;
 
-    quantity<dimensionless> Re = reynolds(rho, v, D, mu);
+    quantity<dimensionless> Re = reynolds(v, D, mu, rho);
     //quantity<kinematic_viscosity> nu = mu/rho;
 
     std::cout << "Reynolds number: " << Re << std::endl;

@@ -14,7 +14,7 @@ using namespace boost::units;
 using namespace boost::units::si;
 
 // Reynolds number with dynamic viscosity
-quantity<dimensionless> reynolds( quantity<mass_density> rho, quantity<velocity> v, quantity<length> L, quantity<dynamic_viscosity> mu );
+quantity<dimensionless> reynolds( quantity<velocity> v, quantity<length> L, quantity<dynamic_viscosity> mu, quantity<mass_density> rho );
 
 // Reynolds number with kinematic viscosity
 quantity<dimensionless> reynolds( quantity<velocity> v, quantity<length> L, quantity<kinematic_viscosity> nu);
@@ -24,8 +24,5 @@ quantity<dimensionless> frictionfactor( quantity<dimensionless> Re, quantity<len
 
 // Pressure loss per meter for single phase fluids
 quantity<pressure_gradient> fluidPressureLoss( quantity<velocity> v, quantity<length> D, quantity<length> eps, quantity<dynamic_viscosity> mu, quantity<mass_density> rho );
-
-// Relative density of solids in fluid
-quantity<dimensionless> relativeDensity( quantity<mass_density> rhos, quantity<mass_density> rhol );
 
 #endif
