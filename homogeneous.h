@@ -13,8 +13,10 @@
 //using namespace boost::units;
 //using namespace boost::units::si;
 
-#define ACv (3.0)
-#define kvK (0.5)
+#define ACV (3.0)
+#define KVK (0.5)
+#define PARTICLE_RATIO (0.015)          // Particle to pipe diameter ratio for sliding flow per Sellgren & Wilson
+#define MUSF (0.415 * pascals / meter)
 
 class Homogeneous : public Regime {
 
@@ -28,7 +30,7 @@ class Homogeneous : public Regime {
             quantity<mass_density> rhos,
             quantity<dimensionless> Cvs);
 
-    quantity<dimensionless> relativeExcessGradient(
+    quantity<pressure_gradient> relativeExcessGradient(
             quantity<velocity> v,
             quantity<length> D,
             quantity<length> d,

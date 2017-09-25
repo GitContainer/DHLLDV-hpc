@@ -27,7 +27,7 @@ public:
             quantity<dimensionless> Cvs) = 0;
 
     // relative excess hydraulic gradient
-    virtual quantity<dimensionless> relativeExcessGradient(
+    virtual quantity<pressure_gradient> relativeExcessGradient(
             quantity<velocity> v,
             quantity<length> D,
             quantity<length> d,

@@ -17,7 +17,7 @@ quantity<pressure_gradient> Homogeneous::pressureLoss(quantity<velocity> v,
     return 1.0*pascals_per_meter;
 }
 
-quantity<dimensionless> Homogeneous::relativeExcessGradient(
+quantity<pressure_gradient> Homogeneous::relativeExcessGradient(
         quantity<velocity> v,
         quantity<length> D,
         quantity<length> d,
@@ -39,9 +39,20 @@ quantity<dimensionless> Homogeneous::relativeExcessGradient(
         ratio_dv_D = 1.0;
     }
 
-    quantity<dimensionless> sb = pow<2>( (ACv/kvK) * log( rhom/rhow ) * sqrt(lambda/8.0) + 1);
+    quantity<dimensionless> sb = pow<2>( (ACV/KVK) * log( rhom/rhow ) * sqrt(lambda/8.0) + 1);
 
+    quantity<pressure_gradient> il = fluidPressureLoss(v, D, eps, dynamicViscosity(nu, rhow), rhow);
+    quantity<dimensionless> f = d / ( PARTICLE_RATIO * D );
 
+    quantity<pressure_gradient> result;
+    quantity<dimensionless> frac = ( 1 + relativeDensity(rhos,rhow)*Cvs - sb ) / ( relativeDensity(rhos,rhow)*Cvs*sb );
 
-    return 1.0;
+    if ( (!use_sf) || ( f < 1.0 ) )
+    {
+        result = il * (1 - (1 - frac)*(1 - ratio_dv_D));
+    } else {
+        result = ( il * ( 1 - (1 - frac)*(1 - ratio_dv_D) ) + (f-1)*MUSF ) / f;
+    }
+
+    return result;
 }

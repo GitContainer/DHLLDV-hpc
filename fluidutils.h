@@ -25,4 +25,10 @@ quantity<dimensionless> frictionfactor( quantity<dimensionless> Re, quantity<len
 // Pressure loss per meter for single phase fluids
 quantity<pressure_gradient> fluidPressureLoss( quantity<velocity> v, quantity<length> D, quantity<length> eps, quantity<dynamic_viscosity> mu, quantity<mass_density> rho );
 
+// Kinematic viscosity from dynamic viscosity and density
+quantity<kinematic_viscosity> kinematicViscosity( quantity<dynamic_viscosity> mu, quantity<mass_density> rho );
+
+// Dynamic viscosity from kinemati viscosity and density
+quantity<dynamic_viscosity> dynamicViscosity( quantity<kinematic_viscosity> nu, quantity<mass_density> rho );
+
 #endif

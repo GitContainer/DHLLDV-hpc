@@ -39,3 +39,14 @@ quantity<pressure_gradient> fluidPressureLoss( quantity<velocity> v, quantity<le
     return ( 0.5 * lambda / D * rho * pow<2>(v) );
 }
 
+// Kinematic viscosity from dynamic viscosity and density
+quantity<kinematic_viscosity> kinematicViscosity( quantity<dynamic_viscosity> mu, quantity<mass_density> rho )
+{
+    return (mu / rho);
+}
+
+// Dynamic viscosity from kinemati viscosity and density
+quantity<dynamic_viscosity> dynamicViscosity( quantity<kinematic_viscosity> nu, quantity<mass_density> rho )
+{
+    return ( nu * rho );
+}
