@@ -16,4 +16,8 @@ using namespace boost::units::si;
 // Relative density of solids in fluid
 quantity<dimensionless> relativeDensity( quantity<mass_density> rhos, quantity<mass_density> rhol );
 
+// Terminal settling velocity according to the equations of Stokes, Budryck and Rittinger
+quantity<velocity> terminalSettlingVelocity( quantity<length> diameter, quantity<mass_density>
+                                            rhos, quantity<mass_density> rhol);
+
 #endif
