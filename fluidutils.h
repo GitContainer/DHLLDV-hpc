@@ -25,7 +25,4 @@ quantity<dimensionless> frictionfactor( quantity<dimensionless> Re, quantity<len
 // Pressure loss per meter for single phase fluids
 quantity<pressure_gradient> fluidPressureLoss( quantity<velocity> v, quantity<length> D, quantity<length> eps, quantity<dynamic_viscosity> mu, quantity<mass_density> rho );
 
-// Relative density of solids in fluid
-quantity<dimensionless> relativeDensity( quantity<mass_density> rhos, quantity<mass_density> rhol );
-
 #endif

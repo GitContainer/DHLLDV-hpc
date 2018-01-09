@@ -11,12 +11,14 @@
 using namespace boost::units;
 using namespace boost::units::si;
 
+typedef quantity<pressure_gradient> dpdx;
+
 class Regime
 {
 public:
 
     // Pressure loss per meter
-    virtual quantity<pressure_gradient> pressureLoss(
+    virtual dpdx pressureLoss(
             quantity<velocity> v,
             quantity<length> D,
             quantity<length> d,
@@ -27,7 +29,7 @@ public:
             quantity<dimensionless> Cvs) = 0;
 
     // relative excess hydraulic gradient
-    virtual quantity<dimensionless> relativeExcessGradient(
+    virtual dpdx relativeExcessGradient(
             quantity<velocity> v,
             quantity<length> D,
             quantity<length> d,

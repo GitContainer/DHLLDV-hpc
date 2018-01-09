@@ -15,10 +15,12 @@
 
 #define ACv (3.0)
 #define kvK (0.5)
+#define particle_ratio (0.015)
+#define musf (0.415 * pascals / meter )
 
 class Homogeneous : public Regime {
 
-    quantity<pressure_gradient> pressureLoss(
+    dpdx pressureLoss(
             quantity<velocity> v,
             quantity<length> D,
             quantity<length> d,
@@ -28,7 +30,7 @@ class Homogeneous : public Regime {
             quantity<mass_density> rhos,
             quantity<dimensionless> Cvs);
 
-    quantity<dimensionless> relativeExcessGradient(
+    dpdx relativeExcessGradient(
             quantity<velocity> v,
             quantity<length> D,
             quantity<length> d,

@@ -4,19 +4,23 @@
 #include <cmath>
 #include <boost/units/cmath.hpp>
 
-quantity<pressure_gradient> Homogeneous::pressureLoss(quantity<velocity> v,
-                                                      quantity<length> D,
-                                                      quantity<length> d,
-                                                      quantity<length> eps,
-                                                      quantity<kinematic_viscosity> nu,
-                                                      quantity<mass_density> rhow,
-                                                      quantity<mass_density> rhos,
-                                                      quantity<dimensionless> Cvs)
+//#include <iostream>
+
+
+dpdx Homogeneous::pressureLoss(quantity<velocity> v,
+        quantity<length> D,
+        quantity<length> d,
+        quantity<length> eps,
+        quantity<kinematic_viscosity> nu,
+        quantity<mass_density> rhow,
+        quantity<mass_density> rhos,
+        quantity<dimensionless> Cvs)
 {
-    return 1.0*pascals_per_meter;
+    return relativeExcessGradient(v, D, d, eps, nu, rhow, rhos, Cvs, true) * relativeDensity(rhos, rhow) * Cvs
+        + fluidPressureLoss(v, D, eps, nu*rhow, rhow);
 }
 
-quantity<dimensionless> Homogeneous::relativeExcessGradient(
+dpdx Homogeneous::relativeExcessGradient(
         quantity<velocity> v,
         quantity<length> D,
         quantity<length> d,
@@ -39,8 +43,19 @@ quantity<dimensionless> Homogeneous::relativeExcessGradient(
     }
 
     quantity<dimensionless> sb = pow<2>( (ACv/kvK) * log( rhom/rhow ) * sqrt(lambda/8.0) + 1);
-
-
-
-    return 1.0;
+    quantity<dimensionless> top = 1.0 + relativeDensity(rhos, rhow)*Cvs - sb;
+    quantity<dimensionless> bottom = relativeDensity(rhos, rhow)*Cvs*sb;
+    
+    dpdx il = fluidPressureLoss(v, D, eps, nu*rhow, rhow);
+    quantity<dimensionless> f = d / ( particle_ratio * D );
+    
+    if( !use_sf || (f < 1.0) )
+    {
+        return il*(1.0 - (1.0-top/bottom)*(1.0-ratio_dv_D));
+    }
+    else
+    {
+        // Sliding flow as per equation 8.8-5
+        return (il * (1.0 - (1.0 - top/bottom)*(1.0 - ratio_dv_D)) + (f-1)*musf)/f;
+    }
 }
