@@ -29,11 +29,7 @@ public:
             quantity<dimensionless> Cvs) = 0;
 
     // relative excess hydraulic gradient
-<<<<<<< HEAD
     virtual dpdx relativeExcessGradient(
-=======
-    virtual quantity<pressure_gradient> relativeExcessGradient(
->>>>>>> e17fb798a78abf6777cf3b522b808c142933f340
             quantity<velocity> v,
             quantity<length> D,
             quantity<length> d,
