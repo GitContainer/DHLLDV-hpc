@@ -4,7 +4,7 @@
 #include <iostream>
 
 // Reynolds number with dynamic viscosity
-quantity<dimensionless> reynolds( quantity<mass_density> rho, quantity<velocity> v, quantity<length> L, quantity<dynamic_viscosity> mu )
+quantity<dimensionless> reynolds(quantity<velocity> v, quantity<length> L, quantity<dynamic_viscosity> mu , quantity<mass_density> rho)
 {
     return ( rho * v * L / mu );
 }
@@ -29,8 +29,23 @@ quantity<dimensionless> frictionfactor( quantity<dimensionless> Re, quantity<len
 // Pressure loss per meter for single phase fluids
 quantity<pressure_gradient> fluidPressureLoss( quantity<velocity> v, quantity<length> D, quantity<length> eps, quantity<dynamic_viscosity> mu, quantity<mass_density> rho )
 {
-    quantity<dimensionless> Re = reynolds(rho, v, D, mu);
+    quantity<dimensionless> Re = reynolds(v, D, mu, rho);
     quantity<dimensionless> lambda = frictionfactor( Re, D, eps);
 
     return ( 0.5 * lambda / D * rho * pow<2>(v) );
 }
+<<<<<<< HEAD
+=======
+
+// Kinematic viscosity from dynamic viscosity and density
+quantity<kinematic_viscosity> kinematicViscosity( quantity<dynamic_viscosity> mu, quantity<mass_density> rho )
+{
+    return (mu / rho);
+}
+
+// Dynamic viscosity from kinemati viscosity and density
+quantity<dynamic_viscosity> dynamicViscosity( quantity<kinematic_viscosity> nu, quantity<mass_density> rho )
+{
+    return ( nu * rho );
+}
+>>>>>>> e17fb798a78abf6777cf3b522b808c142933f340
