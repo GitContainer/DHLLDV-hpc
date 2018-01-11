@@ -13,7 +13,8 @@ quantity<velocity> DHLLDV::LDV::limitDepositVelocity(quantity<kinematic_viscosit
 
     // quantities which are shared between methods are calculated first
     quantity<dimensionless> Rsd = relativeDensity(rhos,rhol);
-    quantity<dimensionless> ap = 3.2 * pow<static_rational<2,9> >(1.65 / Rsd);
+    // TODO: change factor to 3.2 for production
+    quantity<dimensionless> ap = 3.4 * pow<static_rational<2,9> >(1.65 / Rsd);
     quantity<velocity> vt = terminalSettlingRuby(nu, d, rhos, rhol, g);
     quantity<dimensionless> Re_p = vt * d / nu;
     quantity<dimensionless> beta = ( 4.7 + 0.41 * pow<static_rational<3,4> >(Re_p) ) / ( 1.0 + 0.175 * pow<static_rational<3,4> >(Re_p) );
