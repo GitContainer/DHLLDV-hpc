@@ -41,10 +41,10 @@ public:
     quantity<mass_density> getRhoMixture() { return ( Cvs * (rhos - rhol) + rhol ); };
 
 protected:
-    quantity<mass_density> rhol = 1000.0 * kilogrammes_per_cubic_metre;
-    quantity<kinematic_viscosity> nu = 1.0065122620717291e-6 * meter * meter_per_second;
+    quantity<mass_density> rhol = 1025.0 * kilogrammes_per_cubic_metre;
+    quantity<kinematic_viscosity> nu = 1.3e-6 * meter * meter_per_second;
     quantity<length> D = 0.762 * meter;
-    quantity<length> eps = 4.5e-05 * meter;
+    quantity<length> eps = 0.000001 * meter;
 
     // Something with a soil class for particle diameter ...
     quantity<length> d = 0.001 * meter;

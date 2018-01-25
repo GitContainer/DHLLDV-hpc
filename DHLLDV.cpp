@@ -25,7 +25,7 @@ dpdx DHLLDV::pressureLoss( quantity<velocity> v )
 
 quantity<dimensionless> DHLLDV::homogeneousHeadLoss( quantity<velocity> v )
 {
-    return frictionfactor(reynolds(v, D, nu), D, eps) * pow<2>(v) / (2.0 * g * D);
+    return ff(Re(v, D, nu), D, eps) * pow<2>(v) / (2.0 * g * D);
 }
 
 quantity<dimensionless> DHLLDV::fixedBedErhg( quantity<velocity> v )
@@ -54,10 +54,10 @@ dpdx DHLLDV::fixedBedPressureLoss(quantity<velocity> v)
     quantity<length> DH1 = 4.0 * A1 / (O1 + O12);
     quantity<velocity> v1 = v * Ap / A1, v2 = 0.0 * meter_per_second;
 
-    quantity<dimensionless> lambda1 = frictionfactor( reynolds(v,DH1,nu), DH1, eps );
+    quantity<dimensionless> lambda1 = ff( Re(v,DH1,nu), DH1, eps );
     quantity<pressure_gradient> F1_l = (lambda1 * rhol * pow<2>(v1) * 0.125) * O1 / A1, F12_l;
 
-    quantity<dimensionless> lambda12 = frictionfactor( reynolds(v1-v2,DH1,nu), DH1, eps ), lambda12_sf;
+    quantity<dimensionless> lambda12 = ff( Re(v1-v2,DH1,nu), DH1, eps ), lambda12_sf;
 
     lambda12_sf = 0.83 * lambda1 + 0.37 * pow<static_rational<273, 100> >( (v1-v2)/sqrt(2.0*g*DH1*relativeDensity(rhos,rhol)) ) * pow<static_rational<94, 1000> >( rhos*PI/6.0 * pow<3>(d/meter)/rhol );
     lambda12 = (lambda12 > lambda12_sf) ? lambda12 : lambda12_sf;
@@ -80,9 +80,9 @@ quantity<dimensionless> DHLLDV::slidingBedHeadLoss( quantity<velocity> v )
 quantity<dimensionless> DHLLDV::heterogeneousErhg( quantity<velocity> v )
 {
     quantity<velocity> vt = terminalSettlingRuby(nu, d, rhos, rhol, g);
-    quantity<dimensionless> b = beta( reynolds(vt,d,nu) );
+    quantity<dimensionless> b = beta( Re(vt,d,nu) );
     quantity<dimensionless> Kc = 0.175 * (1.0 + b);
-    quantity<dimensionless> lambda = frictionfactor( reynolds(v,D,nu), D, eps );
+    quantity<dimensionless> lambda = ff( Re(v,D,nu), D, eps );
 
     quantity<dimensionless> result = vt * pow(1.0 - Cvs/Kc, b) / v + 72.25 * (1.0/lambda) * pow<static_rational<10,3> >(vt / sqrt(g*d)) * pow<2>( pow<static_rational<1,3> >(nu * g) / v ) ;
 

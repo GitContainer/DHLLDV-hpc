@@ -36,7 +36,7 @@ quantity<velocity> DHLLDV::LDV::limitDepositVelocity(quantity<kinematic_viscosit
     v_r = upperLimit(d, Rsd, v_s, v_r);
 
     // The lower limit
-    v_s = lowerLimit(nu, D, d, eps, vt, Cvs, beta, KC, g, musf, v_s, v_r);
+    v_s = lowerLimit(nu, D, d, eps, vt, Cvs, beta, KC, g, musf);
 
     return (v_s > v_r) ? v_s : v_r;
 }
@@ -52,7 +52,7 @@ quantity<velocity> DHLLDV::LDV::verySmallParticles(quantity<kinematic_viscosity>
     {
         v0 = result;
         result = 1.4 * pow<static_rational<1,3> >(nu * relativeDensity(rhos, rhol) * gravity)
-            * sqrt( 8.0 / frictionfactor(reynolds(v0, D, nu), D, eps) );
+            * sqrt( 8.0 / ff(Re(v0, D, nu), D, eps) );
     }
 
     return result;
@@ -69,7 +69,7 @@ quantity<velocity> DHLLDV::LDV::smallParticles(quantity<kinematic_viscosity> nu,
     while ( (abs(v0 - result) > TOL) && (it++ < MAX_ITER) )
     {
         v0 = result;
-        result = ap * pow<static_rational<1,3> >(vt * pow(1-Cvs/KC, beta) * Cvs * (2.0 * gravity * Rsd * D) / frictionfactor(reynolds(v0, D, nu), D, eps));
+        result = ap * pow<static_rational<1,3> >(vt * pow(1-Cvs/KC, beta) * Cvs * (2.0 * gravity * Rsd * D) / ff(Re(v0, D, nu), D, eps));
     }
 
     return result;
@@ -97,14 +97,14 @@ quantity<velocity> DHLLDV::LDV::largeParticles(quantity<kinematic_viscosity> nu,
     while ( (abs(v0 - result) > TOL) && (it++ < MAX_ITER) )
     {
         v0 = result;
-        result = ap * pow<static_rational<1,3> >( pow(1.0-Cvs/KC, beta) * Cvs * sqrt(musf * Cvb * PI/8.0) * sqrt(Cvr_ldv) / frictionfactor(reynolds(v0, D, nu), D, eps) ) * sqrt( 2.0 * gravity * Rsd * D);
+        result = ap * pow<static_rational<1,3> >( pow(1.0-Cvs/KC, beta) * Cvs * sqrt(musf * Cvb * PI/8.0) * sqrt(Cvr_ldv) / ff(Re(v0, D, nu), D, eps) ) * sqrt( 2.0 * gravity * Rsd * D);
     }
 
     return result;
 }
 
 quantity<velocity> DHLLDV::LDV::lowerLimit(quantity<kinematic_viscosity> nu, quantity<length> D, quantity<length> d, quantity<length> eps, quantity<velocity> vt, quantity<dimensionless> Cvs, quantity<dimensionless> beta,
-                                           quantity<dimensionless> KC, quantity<acceleration> g, quantity<dimensionless> musf, quantity<velocity> v_s, quantity<velocity> v_r)
+                                           quantity<dimensionless> KC, quantity<acceleration> g, quantity<dimensionless> musf)
 {
     quantity<velocity> result = 10.0 * TOL;
     quantity<velocity> v0 = - result;
@@ -118,11 +118,17 @@ quantity<velocity> DHLLDV::LDV::lowerLimit(quantity<kinematic_viscosity> nu, qua
     {
         v0 = result;
 
-        B = vt * pow(1.0-Cvs/KC, beta);
-        C = 72.25 / frictionfactor( reynolds(v0,D,nu), D, eps ) * pow<static_rational<10,3> >(vt/sqrt(g*d)) * pow<static_rational<2,3> >(nu*g) / musf;
+        B = vt * pow(1.0-Cvs/KC, beta) / musf;
+        C = 72.25 / ff( Re(v0,D,nu), D, eps ) * pow<static_rational<10,3> >(vt/sqrt(g*d)) * pow<static_rational<2,3> >(nu*g) / musf;
 
         result = 0.5*B + 0.5*sqrt( pow<2>(B) + 4.0 * C );
     }
+
+    result *= 0.8;
+
+    //std::cout << "d: " << d << ", Re: " << reynolds(result,D,nu) << std::endl;
+
+//    std::cout << "d: " << d << ", sqrt(Cx): " << sqrt(g*d/pow<2>(vt)) << ", sqrt(Cx) model: " << pow<static_rational<20,9> >(sqrt(g*d/pow<2>(vt))) << std::endl;
 
     return result;
 }

@@ -16,5 +16,8 @@ quantity<velocity> terminalSettlingRuby(quantity<kinematic_viscosity> nu, quanti
 // Relative density of solids in fluid
 quantity<dimensionless> relativeDensity( quantity<mass_density> rhos, quantity<mass_density> rhol );
 
+// Durand & Condiolis drag coeffcient
+quantity<dimensionless> sqrtCx(quantity<length> d, quantity<kinematic_viscosity> nu, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<acceleration> g);
+
 
 #endif

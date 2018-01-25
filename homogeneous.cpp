@@ -31,8 +31,8 @@ dpdx Homogeneous::relativeExcessGradient(
         quantity<dimensionless> Cvs,
         bool use_sf = true )
 {
-    quantity<dimensionless> Re = reynolds(v, D, nu);
-    quantity<dimensionless> lambda = frictionfactor(Re, D, eps);
+    quantity<dimensionless> Re = Re(v, D, nu);
+    quantity<dimensionless> lambda = ff(Re, D, eps);
 
     quantity<mass_density> rhom = rhow + Cvs*(rhos - rhow);
 

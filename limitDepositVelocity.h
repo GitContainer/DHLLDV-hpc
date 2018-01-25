@@ -36,7 +36,7 @@ namespace DHLLDV {
             quantity<length> eps, quantity<length> d,
             quantity<acceleration> gravity, quantity<dimensionless> musf, quantity<dimensionless> Cvb);
 
-        quantity<velocity> lowerLimit(quantity<kinematic_viscosity> nu, quantity<length> D, quantity<length> d, quantity<length> eps, quantity<velocity> vt, quantity<dimensionless> Cvs, quantity<dimensionless> beta, quantity<dimensionless> KC, quantity<acceleration> g, quantity<dimensionless> musf, quantity<velocity> v_s, quantity<velocity> v_r);
+        quantity<velocity> lowerLimit(quantity<kinematic_viscosity> nu, quantity<length> D, quantity<length> d, quantity<length> eps, quantity<velocity> vt, quantity<dimensionless> Cvs, quantity<dimensionless> beta, quantity<dimensionless> KC, quantity<acceleration> g, quantity<dimensionless> musf);
 
         quantity<velocity> upperLimit(quantity<length> d, quantity<dimensionless> Rsd, quantity<velocity> v_s, quantity<velocity> v_r);
     }
