@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-quantity<dimensionless> DHLLDV::slipRatio( quantity<velocity> v, quantity<length> D, quantity<length> d, quantity<length> eps, quantity<kinematic_viscosity> nu, quantity<mass_density> rhol, quantity<mass_density> rhos,
+quantity<dimensionless> dhlldv::slipRatio( quantity<velocity> v, quantity<length> D, quantity<length> d, quantity<length> eps, quantity<kinematic_viscosity> nu, quantity<mass_density> rhol, quantity<mass_density> rhos,
                                            quantity<dimensionless> Cvt, quantity<acceleration> g, quantity<dimensionless> musf, quantity<dimensionless> Cvb )
 {
     quantity<dimensionless> Rsd = relativeDensity(rhos, rhol);
@@ -42,7 +42,7 @@ quantity<dimensionless> DHLLDV::slipRatio( quantity<velocity> v, quantity<length
     return Xi;
 }
 
-quantity<dimensionless> DHLLDV::slipRatio_FB(quantity<velocity> v, quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvt, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<length> D, quantity<length> eps, quantity<length> d, quantity<acceleration> g, quantity<dimensionless> musf, quantity<dimensionless> Cvb)
+quantity<dimensionless> dhlldv::slipRatio_FB(quantity<velocity> v, quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvt, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<length> D, quantity<length> eps, quantity<length> d, quantity<acceleration> g, quantity<dimensionless> musf, quantity<dimensionless> Cvb)
 {
     quantity<velocity> v_ldv = LDV::limitDepositVelocity(nu, Cvt, rhos, rhol, D, eps, d, g, musf, Cvb);
     quantity<dimensionless> kappa = 1.0 / ( 1.0 - slipRatio_LDV(v, nu, Cvt, rhos, rhol, D, eps, d, g, musf, Cvb) );
@@ -92,7 +92,7 @@ def slip_ratio(vls, Dp,  d, epsilon, nu, rhol, rhos, Cvt):
     return min(max(Xi, 0.0),1.0)
 */
 
-quantity<dimensionless> DHLLDV::slipRatio_LDV(quantity<velocity> v, quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvt, quantity<mass_density> rhos, quantity<mass_density> rhol,
+quantity<dimensionless> dhlldv::slipRatio_LDV(quantity<velocity> v, quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvt, quantity<mass_density> rhos, quantity<mass_density> rhol,
                                               quantity<length> D, quantity<length> eps, quantity<length> d, quantity<acceleration> g, quantity<dimensionless> musf, quantity<dimensionless> Cvb)
 {
     quantity<dimensionless> Cvr = Cvt / Cvb;
@@ -117,7 +117,7 @@ quantity<dimensionless> DHLLDV::slipRatio_LDV(quantity<velocity> v, quantity<kin
     return (1.0/(2.0*Cd) * pow(1.0-Cvt/Kc, beta) * v_ldv / v );*/
 }
 
-quantity<dimensionless> DHLLDV::slipRatio_HeHo(quantity<velocity> v, quantity<kinematic_viscosity> nu, quantity<length> D, quantity<length> d, quantity<length> eps, quantity<mass_density> rhos, quantity<mass_density> rhol,
+quantity<dimensionless> dhlldv::slipRatio_HeHo(quantity<velocity> v, quantity<kinematic_viscosity> nu, quantity<length> D, quantity<length> d, quantity<length> eps, quantity<mass_density> rhos, quantity<mass_density> rhol,
                                                quantity<acceleration> g)
 {
     /*quantity<velocity> vt = terminalSettlingRuby(nu, d, rhos, rhol, g);
@@ -138,7 +138,7 @@ quantity<dimensionless> DHLLDV::slipRatio_HeHo(quantity<velocity> v, quantity<ki
     return corrFactor * pow<2>(1.25*6.80) / ff(Re(v,D,nu),D,eps) / pow<3>( sqrtCx(d,nu,rhos,rhol,g) ) * pow<2>(pow<static_rational<1,3> >(nu*g) / v);
 }
 
-quantity<dimensionless> DHLLDV::slipRatio_tan(quantity<velocity> v, quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvt, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<length> D, quantity<length> eps, quantity<length> d, quantity<acceleration> g, quantity<dimensionless> musf, quantity<dimensionless> Cvb)
+quantity<dimensionless> dhlldv::slipRatio_tan(quantity<velocity> v, quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvt, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<length> D, quantity<length> eps, quantity<length> d, quantity<acceleration> g, quantity<dimensionless> musf, quantity<dimensionless> Cvb)
 {
     quantity<dimensionless> Cvr = Cvt / Cvb;
     quantity<dimensionless> alpha = 0.58 * pow<static_rational<-42, 100> >( Cvr );

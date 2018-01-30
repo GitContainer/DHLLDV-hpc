@@ -14,7 +14,8 @@ add_executable(test_DHLLDV_class test_DHLLDV_class.cpp
                                 DHLLDV.cpp
                                 waterData.cpp 
                                 particleUtils.cpp 
-                                fluidutils.cpp )
+                                fluidutils.cpp
+                                core/utils.cpp )
                                 
 add_executable(test_slipRatio test_slipRatio.cpp
                                 waterData.cpp
@@ -23,5 +24,10 @@ add_executable(test_slipRatio test_slipRatio.cpp
                                 fluidutils.cpp 
                                 limitDepositVelocity.cpp )
                                 
-add_executable(imitateXlsx imitateXlsx.cpp )
+add_executable(imitateXlsx imitateXlsx.cpp 
+                            DHLLDV.cpp
+                            particleUtils.cpp
+                            fluidutils.cpp
+                            core/utils.cpp )
+                            
 target_link_libraries(imitateXlsx xlsxwriter)

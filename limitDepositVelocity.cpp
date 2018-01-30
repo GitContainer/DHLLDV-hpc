@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-quantity<velocity> DHLLDV::LDV::limitDepositVelocity(quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvs, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<length> D, quantity<length> eps, quantity<length> d, quantity<acceleration> g, quantity<dimensionless> musf, quantity<dimensionless> Cvb)
+quantity<velocity> dhlldv::LDV::limitDepositVelocity(quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvs, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<length> D, quantity<length> eps, quantity<length> d, quantity<acceleration> g, quantity<dimensionless> musf, quantity<dimensionless> Cvb)
 {
     quantity<velocity> v_r, v_s;
 
@@ -41,7 +41,7 @@ quantity<velocity> DHLLDV::LDV::limitDepositVelocity(quantity<kinematic_viscosit
     return (v_s > v_r) ? v_s : v_r;
 }
 
-quantity<velocity> DHLLDV::LDV::verySmallParticles(quantity<kinematic_viscosity> nu, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<length> D, quantity<length> eps, quantity<acceleration> gravity)
+quantity<velocity> dhlldv::LDV::verySmallParticles(quantity<kinematic_viscosity> nu, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<length> D, quantity<length> eps, quantity<acceleration> gravity)
 {
     quantity<velocity> result = 10.0 * TOL;
     quantity<velocity> v0 = -result;
@@ -58,7 +58,7 @@ quantity<velocity> DHLLDV::LDV::verySmallParticles(quantity<kinematic_viscosity>
     return result;
 }
 
-quantity<velocity> DHLLDV::LDV::smallParticles(quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvs, quantity<dimensionless> Rsd, quantity<dimensionless> ap, quantity<velocity> vt, quantity<dimensionless> beta,
+quantity<velocity> dhlldv::LDV::smallParticles(quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvs, quantity<dimensionless> Rsd, quantity<dimensionless> ap, quantity<velocity> vt, quantity<dimensionless> beta,
                                                quantity<dimensionless> KC, quantity<length> D, quantity<length> eps, quantity<length> d, quantity<acceleration> gravity)
 {
     quantity<velocity> result = 10.0 * TOL;
@@ -75,7 +75,7 @@ quantity<velocity> DHLLDV::LDV::smallParticles(quantity<kinematic_viscosity> nu,
     return result;
 }
 
-quantity<velocity> DHLLDV::LDV::largeParticles(quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvs, quantity<dimensionless> Rsd, quantity<dimensionless> ap, quantity<velocity> vt, quantity<dimensionless> beta,
+quantity<velocity> dhlldv::LDV::largeParticles(quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvs, quantity<dimensionless> Rsd, quantity<dimensionless> ap, quantity<velocity> vt, quantity<dimensionless> beta,
                                                quantity<dimensionless> KC, quantity<length> D, quantity<length> eps, quantity<length> d, quantity<acceleration> gravity, quantity<dimensionless> musf, quantity<dimensionless> Cvb)
 {
     // Distuingish between large particles and very large particles
@@ -103,7 +103,7 @@ quantity<velocity> DHLLDV::LDV::largeParticles(quantity<kinematic_viscosity> nu,
     return result;
 }
 
-quantity<velocity> DHLLDV::LDV::lowerLimit(quantity<kinematic_viscosity> nu, quantity<length> D, quantity<length> d, quantity<length> eps, quantity<velocity> vt, quantity<dimensionless> Cvs, quantity<dimensionless> beta,
+quantity<velocity> dhlldv::LDV::lowerLimit(quantity<kinematic_viscosity> nu, quantity<length> D, quantity<length> d, quantity<length> eps, quantity<velocity> vt, quantity<dimensionless> Cvs, quantity<dimensionless> beta,
                                            quantity<dimensionless> KC, quantity<acceleration> g, quantity<dimensionless> musf)
 {
     quantity<velocity> result = 10.0 * TOL;
@@ -133,7 +133,7 @@ quantity<velocity> DHLLDV::LDV::lowerLimit(quantity<kinematic_viscosity> nu, qua
     return result;
 }
 
-quantity<velocity> DHLLDV::LDV::upperLimit(quantity<length> d, quantity<dimensionless> Rsd, quantity<velocity> v_s, quantity<velocity> v_r)
+quantity<velocity> dhlldv::LDV::upperLimit(quantity<length> d, quantity<dimensionless> Rsd, quantity<velocity> v_s, quantity<velocity> v_r)
 {
     // Settings for the method
     quantity<length> drough = 0.002 * meter; // valid for sand with Rsd=1.65

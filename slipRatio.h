@@ -19,7 +19,7 @@
 using namespace boost::units;
 using namespace boost::units::si;
 
-namespace DHLLDV {
+namespace dhlldv {
     quantity<dimensionless> slipRatio(quantity<velocity> v, quantity<length> D, quantity<length> d, quantity<length> eps, quantity<kinematic_viscosity> nu, quantity<mass_density> rhol, quantity<mass_density> rhos, quantity<dimensionless> Cvs, quantity<acceleration> g, quantity<dimensionless> musf, quantity<dimensionless> Cvb);
 
     quantity<dimensionless> slipRatio_FB(quantity<velocity> v, quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvs, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<length> D, quantity<length> eps, quantity<length> d, quantity<acceleration> g, quantity<dimensionless> musf, quantity<dimensionless> Cvb);

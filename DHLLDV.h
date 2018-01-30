@@ -26,6 +26,9 @@ public:
     quantity<dimensionless> heterogeneousHeadLoss( quantity<velocity> v );
     dpdx heterogeneousPressureLoss( quantity<velocity> v );
 
+    quantity<acceleration> getGravity() { return g; };
+    void setGravity( quantity<acceleration> gravity ) { g = gravity; };
+
 private:
     quantity<acceleration> g = 9.80665 * meters_per_second_squared;
     quantity<dimensionless> musf = 0.416;

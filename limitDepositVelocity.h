@@ -19,7 +19,7 @@
 using namespace boost::units;
 using namespace boost::units::si;
 
-namespace DHLLDV {
+namespace dhlldv {
     namespace LDV {
         quantity<velocity> limitDepositVelocity(quantity<kinematic_viscosity> nu, quantity<dimensionless> Cvs, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<length> D, quantity<length> eps, quantity<length> d, quantity<acceleration> gravity, quantity<dimensionless> musf, quantity<dimensionless> Cvb);
 
