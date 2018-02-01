@@ -20,6 +20,7 @@ class mixtureLossModel
 {
 public:
     virtual dpdx pressureLoss( quantity<velocity> v ) = 0;
+    virtual quantity<dimensionless> headLoss( quantity<velocity> v ) = 0;
 
     void setRhoLiquid( quantity<mass_density> rho ) { rhol = rho; };
     quantity<mass_density> getRhoLiquid() { return rhol; };

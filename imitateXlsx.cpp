@@ -108,7 +108,7 @@ int main()
     worksheet_set_column_opt(ws, 2, 2, 20.0, NULL, NULL);
     worksheet_set_column_opt(ws, 3, 3, 10.0, NULL, NULL);
     worksheet_set_column_opt(ws, 4, 4, 136.86, NULL, NULL);
-    worksheet_set_column_opt(ws, 5, 60, 16.14, NULL, NULL);
+    worksheet_set_column_opt(ws, 5, 100, 16.14, NULL, NULL);
 
 //    worksheet_set_row_opt(ws, 2, 17.25, NULL, NULL);
     worksheet_set_row_opt(ws, 0, 49.50, NULL, NULL);
@@ -195,8 +195,17 @@ int main()
     worksheet_write_string(ws,1,33,"Hydraulic gradient He carrier liquid", clhead);
 
     worksheet_write_string(ws,1,40,"Hydraulic gradient Ho carrier liquid", clhead);
+    
+    worksheet_write_string(ws,1,47,"Hydraulic gradient Cvs=c carrier liquid", clhead);
 
     worksheet_write_string(ws,1,54,"Heterogeneous slip curve", clhead);
+    worksheet_write_string(ws,1,55,"Slip around the LDV", clhead);
+    worksheet_write_string(ws,1,56,"Fixed bed slip curve", clhead);
+    worksheet_write_string(ws,1,57,"3LM slip curve", clhead);
+    worksheet_write_string(ws,1,58,"Tangent line slip curve", clhead);
+    worksheet_write_string(ws,1,59,"Resulting slip curve", clhead);
+    worksheet_write_string(ws,1,60,"Hydraulic gradient Cvt = c carrier liquid", clhead);
+    worksheet_write_string(ws,1,61,"Solids effect Cvt = c carrier liquid", clhead);
 
     // Maximum linespeed where the hydraulic gradient is 1 for the carrier liquid
     quantity<velocity> vmax = maximumLineSpeed(mlm->getPipe().D(), mlm->getPipe().eps(),
@@ -223,8 +232,17 @@ int main()
 
         worksheet_write_number(ws, 3+i, 40, mlm->homogeneousHeadLoss(vtemp), clnum);
 
+        worksheet_write_number(ws, 3+i, 47, mlm->headLoss(vtemp), clnum);
 
         worksheet_write_number(ws, 3+i, 54, 0.0, clnum);
+        worksheet_write_number(ws, 3+i, 55, 0.0, clnum);
+        worksheet_write_number(ws, 3+i, 56, 0.0, clnum);
+        worksheet_write_number(ws, 3+i, 57, 0.0, clnum);
+        worksheet_write_number(ws, 3+i, 58, 0.0, clnum);
+        worksheet_write_number(ws, 3+i, 54, 0.0, clnum);
+        worksheet_write_number(ws, 3+i, 59, 0.0, clnum);
+        worksheet_write_number(ws, 3+i, 60, 0.0, clnum);
+        worksheet_write_number(ws, 3+i, 61, 0.0, clnum);
     }
 
     // Dimension headers of the columns
@@ -240,6 +258,8 @@ int main()
     worksheet_write_string(ws,2,33, unitSymbol(mlm->heterogeneousHeadLoss(vmax)).c_str(), clhead);
 
     worksheet_write_string(ws,2,40, unitSymbol(mlm->homogeneousHeadLoss(vmax)).c_str(), clhead);
+    
+    worksheet_write_string(ws,2,47, "", clhead);
 
     worksheet_write_string(ws,2,54, "", clhead);
 
@@ -275,12 +295,14 @@ int main()
 
     chart_axis_set_min(cl_chart->x_axis, 0.0);
     chart_axis_set_max(cl_chart->x_axis, 10.0);
+    chart_axis_set_num_format(cl_chart->x_axis, "0");
 
     chart_axis_set_min(cl_chart->y_axis, 0.0);
     chart_axis_set_max(cl_chart->y_axis, 0.4);
+    chart_axis_set_num_format(cl_chart->y_axis, "0.00");
 
     chart_axis_major_gridlines_set_visible(cl_chart->x_axis, LXW_TRUE);
-    chart_axis_set_minor_unit(cl_chart->x_axis, 0.1);
+    chart_axis_set_minor_unit(cl_chart->x_axis, 0.2);
     chart_axis_minor_gridlines_set_visible(cl_chart->x_axis, LXW_TRUE);
     chart_axis_set_minor_unit(cl_chart->y_axis, 0.01);
     chart_axis_minor_gridlines_set_visible(cl_chart->y_axis, LXW_TRUE);
@@ -294,5 +316,35 @@ int main()
 
     worksheet_insert_chart_opt(ws,2,4,cl_chart, &ch_options);
 
+    // Carrier liquid slip ratios
+    lxw_chart *sr_chart = workbook_add_chart(workbook, LXW_CHART_SCATTER_STRAIGHT);
+    lxw_chart_series *sr;
+    
+    sr = chart_add_series(sr_chart, "='Head losses single particle'!$F$4:$F$503", "='Head losses single particle'!$BC$4:$BC$504");
+    chart_series_set_name(sr, "Heterogeneous");
+    
+    sr = chart_add_series(sr_chart, "='Head losses single particle'!$F$4:$F$503", "='Head losses single particle'!$BD$4:$BD$504");
+    chart_series_set_name(sr, "Around LDV");
+    
+    sr = chart_add_series(sr_chart, "='Head losses single particle'!$F$4:$F$503", "='Head losses single particle'!$BE$4:$BE$504");
+    chart_series_set_name(sr, "Fixed Bed regime");
+    
+    sr = chart_add_series(sr_chart, "='Head losses single particle'!$F$4:$F$503", "='Head losses single particle'!$BF$4:$BF$504");
+    chart_series_set_name(sr, "3 Layer Model");
+    
+    sr = chart_add_series(sr_chart, "='Head losses single particle'!$F$4:$F$503", "='Head losses single particle'!$BG$4:$BG$504");
+    chart_series_set_name(sr, "Tangent line");
+    
+    sr = chart_add_series(sr_chart, "='Head losses single particle'!$F$4:$F$503", "='Head losses single particle'!$BH$4:$BH$504");
+    chart_series_set_name(sr, "Resulting slip ratio");
+    
+    chart_axis_set_min(sr_chart->x_axis, 0.0);
+    chart_axis_set_max(sr_chart->x_axis, 10.0);
+    chart_axis_set_num_format(sr_chart->x_axis, "0");
+    
+    
+    worksheet_insert_chart_opt(ws,2,173,sr_chart,&ch_options);
+    
+    
     return workbook_close(workbook);
 }

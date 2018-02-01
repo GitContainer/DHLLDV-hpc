@@ -12,6 +12,8 @@ public:
     ~DHLLDV();
 
     dpdx pressureLoss(quantity<velocity> v);
+    
+    quantity<dimensionless> headLoss( quantity<velocity> v );
 
     quantity<dimensionless> homogeneousHeadLoss( quantity<velocity> v );
 
@@ -66,6 +68,8 @@ private:
     quantity<dimensionless> dFraction = 0.1;
 
     bool HeHoTransition = true;
+    
+    quantity<dimensionless> srs();
 
 };
 

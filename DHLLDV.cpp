@@ -23,6 +23,57 @@ dpdx DHLLDV::pressureLoss( quantity<velocity> v )
     return result;
 }
 
+
+quantity<dimensionless> DHLLDV::headLoss( quantity<velocity> v )
+{
+    quantity<dimensionless> result = 0.0;
+    
+    if ( fixedBedHeadLoss(v) > slidingBedHeadLoss(v) )
+    {
+        result = slidingBedHeadLoss(v);
+    } else {
+        result = fixedBedHeadLoss(v);
+    }
+    if ( HeHoTransition )
+    {
+        if ( heterogeneousHeadLoss(v) < result )
+        {
+            result = (heterogeneousErhg(v) + (homogeneousHeadLoss(v)-carrierHeadLoss(v))/(relativeDensity(rhos,rhol)*Cvs) - sin(p.a()) ) * relativeDensity(rhos,rhol) * Cvs + carrierHeadLoss(v);
+            if ( (result > slidingBedHeadLoss(v)) && (v < 1.25*LDV() ) )
+            {
+                result = slidingBedHeadLoss(v);
+            }
+        }
+    } else {
+        if ( heterogeneousHeadLoss(v) < result )
+        {
+            result = heterogeneousHeadLoss(v);
+        }
+        if ( (homogeneousHeadLoss(v) > result) && (v > LDV()) ) {
+            result = homogeneousHeadLoss(v);
+        }
+    }
+    
+    quantity<dimensionless> PPRatioCL = d / ( p.D() * ratioDd );
+    quantity<dimensionless> SFpercentage = 0.045;
+    quantity<dimensionless> PPFactorCL = (4.0 - PPFactorCL)/3.0;
+    PPFactorCL = std::max( std::min( PPFactorCL, (quantity<dimensionless>)1.0), (quantity<dimensionless>)0.0 );
+    
+    if ( (PPRatioCL >= 1.0) && (Cvs > SFpercentage) )
+    {
+        if ( heterogeneousHeadLoss(v) < slidingBedHeadLoss(v) )
+        {
+            result = PPFactorCL * result + (1.0 - PPFactorCL) * slidingBedHeadLoss(v);
+            if ( (result > slidingBedHeadLoss(v)) && (homogeneousHeadLoss(v) < slidingBedHeadLoss(v) ) )
+            {
+                result = slidingBedHeadLoss(v);
+            }
+        }
+    }
+    
+    return result;
+}
+
 quantity<dimensionless> DHLLDV::carrierHeadLoss( quantity<velocity> v )
 {
     quantity<velocity> vt = terminalSettlingRuby(nu,d,rhos,rhol,g,shapeFactor);
@@ -35,7 +86,7 @@ quantity<dimensionless> DHLLDV::homogeneousHeadLoss( quantity<velocity> v )
 {
     quantity<dimensionless> result;
 
-    result = ((rhos/rhol - 1.0) * carrierHeadLoss(v) / (Cvs * relativeDensity(rhos,rhol) ) - sin(p.a()) ) * ErhgELMFactor(v);
+    result = ((getRhoMixture()/rhol - 1.0) * carrierHeadLoss(v) / (Cvs * relativeDensity(rhos,rhol) ) - sin(p.a()) ) * ErhgELMFactor(v);
     result *= (HeHoTransition) ? HoMobilisationFactor(v) : (quantity<dimensionless>)1.0;
     result += sin(p.a());
 
@@ -46,7 +97,7 @@ quantity<dimensionless> DHLLDV::homogeneousHeadLoss( quantity<velocity> v )
 
 quantity<dimensionless> DHLLDV::fixedBedErhg( quantity<velocity> v )
 {
-    return (fixedBedHeadLoss(v) - homogeneousHeadLoss(v)) / ( relativeDensity(rhos,rhol) * Cvs );
+    return (fixedBedHeadLoss(v) - carrierHeadLoss(v)) / ( relativeDensity(rhos,rhol) * Cvs );
 }
 
 quantity<dimensionless> DHLLDV::fixedBedHeadLoss( quantity<velocity> v )
@@ -119,7 +170,7 @@ quantity<dimensionless> DHLLDV::heterogeneousErhg( quantity<velocity> v )
 
 quantity<dimensionless> DHLLDV::heterogeneousHeadLoss( quantity<velocity> v )
 {
-    return (heterogeneousErhg(v) * relativeDensity(rhos,rhol) * Cvs + homogeneousHeadLoss(v) );
+    return (heterogeneousErhg(v) * relativeDensity(rhos,rhol) * Cvs + carrierHeadLoss(v) );
 }
 
 dpdx DHLLDV::heterogeneousPressureLoss( quantity<velocity> v )
@@ -313,7 +364,10 @@ quantity<velocity> DHLLDV::LDV()
     return result;
 }
 
-
+quantity<dimensionless> DHLLDV::srs()
+{
+    
+}
 
 
 
