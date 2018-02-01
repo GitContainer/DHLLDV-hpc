@@ -9,7 +9,7 @@
 
 #include <boost/units/cmath.hpp>
 
-using namespace DHLLDV::LDV;
+using namespace dhlldv::LDV;
 
 int main()
 {
@@ -62,11 +62,11 @@ int main()
         v = 0.01 * i * meter_per_second;
 
         out << v.value() << ", "
-            << (DHLLDV::slipRatio_HeHo(v, nu, D, d, eps, rhos, rhow, g)).value() << ", "
-            << (DHLLDV::slipRatio_LDV(v, nu, Cvs, rhos, rhow, D, eps, d, g, musf, Cvb)).value() << ", "
-            << (DHLLDV::slipRatio_FB(v, nu, Cvs, rhos, rhow, D, eps, d, g, musf, Cvb)).value() << ", "
-            << (DHLLDV::slipRatio_tan(v, nu, Cvs, rhos, rhow, D, eps, d, g, musf, Cvb)).value() << ", "
-            << (DHLLDV::slipRatio(v,D,d,eps,nu,rhow,rhos,Cvs,g,musf,Cvb)).value()
+            << (dhlldv::slipRatio_HeHo(v, nu, D, d, eps, rhos, rhow, g)).value() << ", "
+            << (dhlldv::slipRatio_LDV(v, nu, Cvs, rhos, rhow, D, eps, d, g, musf, Cvb)).value() << ", "
+            << (dhlldv::slipRatio_FB(v, nu, Cvs, rhos, rhow, D, eps, d, g, musf, Cvb)).value() << ", "
+            << (dhlldv::slipRatio_tan(v, nu, Cvs, rhos, rhow, D, eps, d, g, musf, Cvb)).value() << ", "
+            << (dhlldv::slipRatio(v,D,d,eps,nu,rhow,rhos,Cvs,g,musf,Cvb)).value()
             << std::endl;
     }
 

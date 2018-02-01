@@ -5,9 +5,9 @@
 
 #include <iostream>
 
-quantity<velocity> terminalSettlingRuby(quantity<kinematic_viscosity> nu, quantity<length> d, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<acceleration> g)
+quantity<velocity> terminalSettlingRuby(quantity<kinematic_viscosity> nu, quantity<length> d, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<acceleration> g, quantity<dimensionless> shape)
 {
-    return 10.0 * nu / d * (sqrt(1.0 + 0.01 * relativeDensity(rhos,rhol) * g * pow<3>(d) / pow<2>(nu) ) - 1.0);
+    return 10.0 * nu / d * (sqrt(1.0 + 0.01 * relativeDensity(rhos,rhol) * g * pow<3>(d) / pow<2>(nu) ) - 1.0) * sqrt((shape / (15.0 * exp(-3.52*shape))) * ((15.0 * exp(-3.52*0.77))/0.77) ) ;
 }
 
 // Relative density of solids in fluid
@@ -20,7 +20,7 @@ quantity<dimensionless> sqrtCx(quantity<length> d, quantity<kinematic_viscosity>
 {
     quantity<dimensionless> factor = 0.6, smallFactor = 1.8;
 
-    quantity<dimensionless> Fr = terminalSettlingRuby(nu,d,rhos,rhol,g) / sqrt(g*d);
+    quantity<dimensionless> Fr = terminalSettlingRuby(nu,d,rhos,rhol,g, 0.77) / sqrt(g*d);
     quantity<dimensionless> wilson = 0.226 * pow<static_rational<1,6> >(g / d * second * second);
     quantity<dimensionless> gibert = pow<static_rational<-10, 9> >(Fr);
 

@@ -19,6 +19,8 @@ public:
     quantity<dimensionless> fixedBedHeadLoss( quantity<velocity> v );
     dpdx fixedBedPressureLoss(quantity<velocity> v);
 
+    quantity<dimensionless> carrierHeadLoss( quantity<velocity> v );
+
     quantity<dimensionless> slidingBedErhg( quantity<velocity> v );
     quantity<dimensionless> slidingBedHeadLoss( quantity<velocity> v );
 
@@ -29,11 +31,41 @@ public:
     quantity<acceleration> getGravity() { return g; };
     void setGravity( quantity<acceleration> gravity ) { g = gravity; };
 
+    quantity<dimensionless> getBedConcentration() { return Cvb; };
+    void setBedConcentration( quantity<dimensionless> c ) { Cvb = c; };
+
+    quantity<dimensionless> getCHe() { return cHe; };
+    void setCHe( quantity<dimensionless> c ) { cHe = c; };
+
+    quantity<dimensionless> getShapeFactor() { return shapeFactor; };
+    void setShapeFactor( quantity<dimensionless> f ) { shapeFactor = f; };
+
+    quantity<dimensionless> particleLiftRatio(quantity<velocity> v);
+    quantity<dimensionless> HoMobilisationFactor(quantity<velocity> v);
+    quantity<dimensionless> HeMobilisationFactor(quantity<velocity> v);
+    quantity<dimensionless> ErhgELMFactor(quantity<velocity> v);
+
+    quantity<velocity> LDVsmooth();
+    quantity<velocity> LDVrough();
+    quantity<velocity> LDVsliding();
+    quantity<velocity> LDV();
+
 private:
     quantity<acceleration> g = 9.80665 * meters_per_second_squared;
     quantity<dimensionless> musf = 0.416;
-    quantity<dimensionless> Cvb = 0.6;
+    quantity<dimensionless> Cvb = 0.55;
+    quantity<dimensionless> cHe = 6.80;
+    quantity<dimensionless> CL = 0.270;
+    quantity<dimensionless> shapeFactor = 0.77;
+    quantity<dimensionless> nTimesThickness = 10.0;
+    quantity<dimensionless> Acv = 3.0;
+    quantity<dimensionless> alphap = 3.4;
+    quantity<dimensionless> ratioDd = 0.015;
+    quantity<dimensionless> facTransSbHe = 0.825;
+    quantity<length> dTransSmoothRough = 0.0005 * meter;
+    quantity<dimensionless> dFraction = 0.1;
 
+    bool HeHoTransition = true;
 
 };
 

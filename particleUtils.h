@@ -11,7 +11,7 @@
 using namespace boost::units;
 using namespace boost::units::si;
 
-quantity<velocity> terminalSettlingRuby(quantity<kinematic_viscosity> nu, quantity<length> d, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<acceleration> g);
+quantity<velocity> terminalSettlingRuby(quantity<kinematic_viscosity> nu, quantity<length> d, quantity<mass_density> rhos, quantity<mass_density> rhol, quantity<acceleration> g, quantity<dimensionless> shape);
 
 // Relative density of solids in fluid
 quantity<dimensionless> relativeDensity( quantity<mass_density> rhos, quantity<mass_density> rhol );

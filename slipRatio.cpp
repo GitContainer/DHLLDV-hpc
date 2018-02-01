@@ -12,7 +12,7 @@ quantity<dimensionless> dhlldv::slipRatio( quantity<velocity> v, quantity<length
                                            quantity<dimensionless> Cvt, quantity<acceleration> g, quantity<dimensionless> musf, quantity<dimensionless> Cvb )
 {
     quantity<dimensionless> Rsd = relativeDensity(rhos, rhol);
-    quantity<velocity> vt = terminalSettlingRuby(nu, d, rhos, rhol, g);
+    quantity<velocity> vt = terminalSettlingRuby(nu, d, rhos, rhol, g, 0.77);
     quantity<dimensionless> Re_p = Re(vt, d, nu);
 
     quantity<dimensionless> beta = (4.7 + 0.41 * pow<static_rational<3,4> >(Re_p)) / ( 1.0 + 0.175 * pow<static_rational<3,4> >(Re_p) );
@@ -126,7 +126,7 @@ quantity<dimensionless> dhlldv::slipRatio_HeHo(quantity<velocity> v, quantity<ki
 
     quantity<plane_angle> ia = 0.0 * radians;
 
-    quantity<velocity> vt = terminalSettlingRuby(nu, d, rhos, rhol, g);
+    quantity<velocity> vt = terminalSettlingRuby(nu, d, rhos, rhol, g, 0.77);
     quantity<velocity> vstar = sqrt( ff(Re(v,D,nu),D,eps)/8.0) * v;
     if ( (5.8*vstar) < vt*sin(ia) )
     {

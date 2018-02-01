@@ -9,7 +9,7 @@
 
 #include <boost/units/cmath.hpp>
 
-using namespace DHLLDV::LDV;
+using namespace dhlldv::LDV;
 
 int main()
 {
@@ -76,7 +76,7 @@ int main()
     for (int i = -500; i <= -100; i = i + 7)
     {
         d = pow(10.0, 1.0*i/100.0) * meter;
-        vt = terminalSettlingRuby(nu, d, rhos, rhow, g);
+        vt = terminalSettlingRuby(nu, d, rhos, rhow, g, 0.77);
         Re_p = vt * d / nu;
         beta = ( 4.7 + 0.41 * pow<static_rational<3,4> >(Re_p) ) / ( 1.0 + 0.175 * pow<static_rational<3,4> >(Re_p) );
         KC = 0.175*(1.0 + beta);
