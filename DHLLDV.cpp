@@ -74,6 +74,53 @@ quantity<dimensionless> DHLLDV::headLoss( quantity<velocity> v )
     return result;
 }
 
+quantity<dimensionless> DHLLDV::headLossCvt( quantity<velocity> v )
+{
+    quantity<dimensionless> result = 0.0;
+
+    result = slidingBedHeadLoss(v);
+    if ( HeHoTransition )
+    {
+        if ( heterogeneousHeadLoss(v) < result )
+        {
+            result = (heterogeneousErhg(v) + (homogeneousHeadLoss(v)-carrierHeadLoss(v))/(relativeDensity(rhos,rhol)*Cvs) - sin(p.a()) ) * relativeDensity(rhos,rhol) * Cvs + carrierHeadLoss(v);
+            if ( (result > slidingBedHeadLoss(v)) && (v < 1.25*LDV() ) )
+            {
+                result = slidingBedHeadLoss(v);
+            }
+        }
+    } else {
+        if ( heterogeneousHeadLoss(v) < result )
+        {
+            result = heterogeneousHeadLoss(v);
+        }
+        if ( (homogeneousHeadLoss(v) > result) && (v > LDV()) ) {
+            result = homogeneousHeadLoss(v);
+        }
+    }
+
+    quantity<dimensionless> PPRatioCL = d / ( p.D() * ratioDd );
+    quantity<dimensionless> SFpercentage = 0.045;
+    quantity<dimensionless> PPFactorCL = (4.0 - PPFactorCL)/3.0;
+    PPFactorCL = std::max( std::min( PPFactorCL, (quantity<dimensionless>)1.0), (quantity<dimensionless>)0.0 );
+
+    if ( (PPRatioCL >= 1.0) && (Cvs > SFpercentage) )
+    {
+        if ( heterogeneousHeadLoss(v) < slidingBedHeadLoss(v) )
+        {
+            result = PPFactorCL * result + (1.0 - PPFactorCL) * slidingBedHeadLoss(v);
+            if ( (result > slidingBedHeadLoss(v)) && (homogeneousHeadLoss(v) < slidingBedHeadLoss(v) ) )
+            {
+                result = slidingBedHeadLoss(v);
+            }
+        }
+    }
+
+    result = result / ( 1.0 - slipRatio(v) );
+
+    return result;
+}
+
 quantity<dimensionless> DHLLDV::carrierHeadLoss( quantity<velocity> v )
 {
     quantity<velocity> vt = terminalSettlingRuby(nu,d,rhos,rhol,g,shapeFactor);
@@ -364,9 +411,176 @@ quantity<velocity> DHLLDV::LDV()
     return result;
 }
 
-quantity<dimensionless> DHLLDV::srs()
+quantity<velocity> DHLLDV::LSDV(quantity<velocity> v)
 {
-    
+    quantity<dimensionless> TOL = 1.0e-6, Cvr, lambda0, lambda1, lambda12;
+    quantity<area> Ap, A2, A1;
+    quantity<plane_angle> b;
+    quantity<length> O, O1, O2, O12, DH;
+
+    Cvr = Cvs/Cvb;
+    b = a2beta(Cvr);
+
+    Ap = 0.25 * PI * pow<2>(p.D());
+    A2 = Cvr * Ap;
+    A1 = Ap - A2;
+
+    O = PI * p.D();
+    O1 = (PI - b/radians) * p.D();
+    O2 = b/radians * p.D();
+    O12 = sin(b) * p.D();
+
+    DH = 4.0 * A1 / (O1 + O12);
+
+    int it = 0; const int MAX_ITER = 20;
+    quantity<velocity> result = 1.0 * meter_per_second, v0 = -result;
+    quantity<pressure> tau0, tau1, tau12;
+    quantity<pressure_gradient> dp0 = 1.0*pascals/meter, dp12 = -dp0, dpbed;
+
+    dpbed = musf * rhol * g * relativeDensity(rhos,rhol) * Cvs;
+
+    while ( ( abs((dp12 - dp0)/dp0) > TOL ) && (it++ < MAX_ITER) )
+    {
+        v0 = result / (1 - Cvr);
+
+        lambda0 = ff( Re(v0, p.D(), nu), p.D(), p.eps() );
+        tau0 = pow<2>(v0) * rhol * lambda0 * 0.125;
+        dp0 = tau0 * O / Ap + dpbed;
+
+        lambda1 = ff( Re(v0, DH, nu), DH, p.eps() );
+        lambda12 = ff_bed(DH, d, v0, 0.0*meter_per_second);
+
+        tau1 = pow<2>(v0) * rhol * lambda1 * 0.125;
+        tau12 = pow<2>(v0) * rhol * lambda12 * 0.125;
+
+        dp12 = ( tau1*O1 + tau12*O12 ) / A1;
+        result *= pow<static_rational<1,4> >(dp0 / dp12);
+    }
+
+    return result;
+}
+
+quantity<dimensionless> DHLLDV::ff_bed(quantity<length> D, quantity<length> d, quantity<velocity> v1, quantity<velocity> v2)
+{
+    quantity<dimensionless> lambda1, lambda12a, lambda12b;
+
+    lambda1 = ff(Re(v1,D,nu), D, p.eps());
+    lambda12a = ff(Re(v1-v2,D,nu), D, d);
+    lambda12b = 0.83 * lambda1 + 0.37 * pow<static_rational<273, 100> >( (v1-v2)/sqrt(2.0*g*D*relativeDensity(rhos,rhol)) ) * pow<static_rational<94, 1000> >( rhos*PI/6.0 * pow<3>(d/meter)/rhol );
+
+    return std::max( lambda12b, lambda12a );
+}
+
+quantity<dimensionless> DHLLDV::heterogeneousSlip( quantity<velocity> v )
+{
+    quantity<velocity> vt = terminalSettlingRuby(nu, d, rhos, rhol, g, shapeFactor);
+
+    return std::min( sqrt( srs(v) ) * vt / v, (quantity<dimensionless>)1.0);
+}
+
+quantity<dimensionless> DHLLDV::aroundLDVSlip( quantity<velocity> v )
+{
+    return std::min(threeLMSlip(v) * pow<4>(LDV() / v), (quantity<dimensionless>)1.0);
+}
+
+quantity<dimensionless> DHLLDV::threeLMSlip( quantity<velocity> v )
+{
+    quantity<dimensionless> tmpC = Cvs;
+    quantity<dimensionless> Cvr = Cvs / Cvb, alpha = 0.58 * pow<static_rational<-42,100> >(Cvr), result;
+
+    Cvs = 0.1 * Cvb;
+    result = (1.0 - Cvr) * exp( -(0.83 + 0.25*musf + pow<2>(Cvr - 0.5 - 0.075 * p.D()/meter) + 0.05 * p.D()/meter ) * pow(p.D()/meter, 0.025) * pow(v / LSDV(v), alpha)
+                                * pow(Cvr,0.65) * pow(relativeDensity(rhos,rhol)/1.585,0.1) );
+
+    Cvs = tmpC;
+
+    return result;
+}
+
+quantity<dimensionless> DHLLDV::fixedBedSlip( quantity<velocity> v )
+{
+    quantity<dimensionless> kappaldvcl;
+    kappaldvcl = 1.0 / (1.0 - threeLMSlip(LDV()));
+
+    return 1.0 - Cvs * LDV() / ((Cvb - kappaldvcl * Cvs) * (LDV() - v) + kappaldvcl * Cvs * LDV() );
+}
+
+quantity<dimensionless> DHLLDV::slipTangent(quantity<velocity> v)
+{
+    quantity<velocity> vTan = 5.0 * threeLMSlip( v ) / pow<static_rational<1,4> >( 1.0 - Cvs/Cvb ) * LDV();
+    quantity<dimensionless> result = (1.0 - Cvs/Cvb) * (1.0 - 0.8 * v / vTan );
+
+    if ( result < 0.0 )
+    {
+        result = 0.0;
+    }
+
+    return result;
+}
+
+quantity<dimensionless> DHLLDV::slipRatio(quantity<velocity> v)
+{
+    quantity<dimensionless> minResult, maxResult, result;
+    quantity<velocity> vTan = 5.0 * threeLMSlip( v ) / pow<static_rational<1,4> >( 1.0 - Cvs/Cvb ) * LDV();
+
+    if( slipTangent(v) < threeLMSlip(v) )
+    {
+        minResult = slipTangent(v);
+    } else {
+        minResult = threeLMSlip(v);
+    }
+
+    maxResult = aroundLDVSlip(v);
+
+    if ( (fixedBedSlip(v) < maxResult) && (v < vTan ) )
+    {
+        maxResult = fixedBedSlip(v);
+    }
+
+    if ( v < vTan )
+    {
+        result = minResult * pow(v/vTan, slipRatioPower) + maxResult * (1.0 - pow(v/vTan, slipRatioPower));
+    } else {
+        result = maxResult;
+    }
+
+    if ( (result > threeLMSlip(v)) && (v < vTan) )
+    {
+        result = threeLMSlip(v);
+    }
+
+    quantity<dimensionless> PPRatioCL = d / ( p.D() * ratioDd );
+    quantity<dimensionless> SFpercentage = 0.045;
+    quantity<dimensionless> PPFactorCL = (4.0 - PPFactorCL)/3.0;
+
+    if ( (PPRatioCL >= 1.0) && (Cvs > SFpercentage) )
+    {
+        result = PPFactorCL * result + (1 - PPFactorCL) * threeLMSlip(v);
+    }
+
+    result = (result > 0.0) ? result : (quantity<dimensionless>)0.0;
+
+    return result;
+}
+
+quantity<dimensionless> DHLLDV::srs( quantity<velocity> v )
+{
+    quantity<velocity> vt = terminalSettlingRuby(nu, d, rhos, rhol, g, shapeFactor);
+    quantity<dimensionless> result;
+    quantity<dimensionless> lambda = ff( Re(v,p.D(),nu), p.D(), p.eps() );
+
+    quantity<velocity> ustar = sqrt(0.125*lambda) * v;
+
+    if ( (5.8 * ustar) < (vt * sin(p.a())) )
+    {
+        ustar = vt * sin(p.a()) / 5.8;
+    }
+
+    quantity<dimensionless> cFac = pow<static_rational<4,3> >((vt*cos(p.a()) / (11.6*ustar - vt*sin(p.a()))) / (vt / (11.6*ustar)) );
+
+    result = cFac * pow<2>(1.25*cHe) / lambda / pow<3>(sqrtCx(d, nu, rhos, rhol, g)) * pow<2>(pow<static_rational<1,3> >(nu * g) / v);
+
+    return result;
 }
 
 

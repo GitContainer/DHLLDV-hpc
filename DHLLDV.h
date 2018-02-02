@@ -14,6 +14,7 @@ public:
     dpdx pressureLoss(quantity<velocity> v);
     
     quantity<dimensionless> headLoss( quantity<velocity> v );
+    quantity<dimensionless> headLossCvt( quantity<velocity> v );
 
     quantity<dimensionless> homogeneousHeadLoss( quantity<velocity> v );
 
@@ -52,6 +53,15 @@ public:
     quantity<velocity> LDVsliding();
     quantity<velocity> LDV();
 
+    quantity<velocity> LSDV(quantity<velocity> v);
+
+    quantity<dimensionless> heterogeneousSlip( quantity<velocity> v );
+    quantity<dimensionless> aroundLDVSlip( quantity<velocity> v );
+    quantity<dimensionless> threeLMSlip( quantity<velocity> v );
+    quantity<dimensionless> fixedBedSlip( quantity<velocity> v );
+    quantity<dimensionless> slipTangent(quantity<velocity> v);
+    quantity<dimensionless> slipRatio(quantity<velocity> v);
+
 private:
     quantity<acceleration> g = 9.80665 * meters_per_second_squared;
     quantity<dimensionless> musf = 0.416;
@@ -66,11 +76,14 @@ private:
     quantity<dimensionless> facTransSbHe = 0.825;
     quantity<length> dTransSmoothRough = 0.0005 * meter;
     quantity<dimensionless> dFraction = 0.1;
+    quantity<dimensionless> slipRatioPower = 0.5;
 
     bool HeHoTransition = true;
     
-    quantity<dimensionless> srs();
+    quantity<dimensionless> srs(quantity<velocity> v);
 
+    // Friction factor with bed in sliding flow
+    quantity<dimensionless> ff_bed(quantity<length> D, quantity<length> d, quantity<velocity> v1, quantity<velocity> v2);
 };
 
 #endif

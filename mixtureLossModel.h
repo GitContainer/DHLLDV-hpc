@@ -37,6 +37,9 @@ public:
     void setPipeRoughness( quantity<length> e ) { eps = e; };
     quantity<length> getPipeRoughness() { return eps; };*/
 
+    void setD50(quantity<length> d50) { d = d50; };
+    quantity<length> getD50() { return d; };
+
     void setRhoSolids( quantity<mass_density> rho ) { rhos = rho; };
     quantity<mass_density> getRhoSolids() { return rhos; };
 
@@ -53,7 +56,7 @@ protected:
 //    quantity<length> eps = 0.000001 * meter;
 
     // Something with a soil class for particle diameter ...
-    quantity<length> d = 0.001 * meter;
+    quantity<length> d = 0.001000 * meter;
 
     quantity<mass_density> rhos = 2650.0 * kilogrammes_per_cubic_metre;
     quantity<dimensionless> Cvs = 0.300;

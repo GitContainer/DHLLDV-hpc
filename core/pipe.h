@@ -21,7 +21,7 @@ public:
     void setA( quantity<plane_angle> a ) { inclination = a; };
 
 private:
-    quantity<length> diameter = 0.762 * meter;
+    quantity<length> diameter = 0.5 * meter;
     quantity<length> roughness = 0.000001 * meter;
     quantity<plane_angle> inclination = 0.0 * radians;
 };
